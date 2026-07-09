@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Water Cleaner — charity: water</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- TITLE SCREEN -->
+  <div class="screen active" id="titleScreen">
+    <div class="title-group">
+      <h1>Water<br>Cleaner</h1>
+      <button class="menu-btn" id="playBtn">Play</button>
+      <button class="menu-btn" id="levelsBtn">Levels</button>
+    </div>
+    <div class="brand-mark">
+      <img src="assets/cw_horizontal_white.jpg" alt="charity: water">
+    </div>
+  </div>
+
+  <!-- LEVELS SCREEN -->
+  <div class="screen" id="levelsScreen">
+    <h2>Levels</h2>
+    <div class="level-grid" id="levelGrid"></div>
+    <button class="back-arrow" id="backFromLevels">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+  </div>
+
+  <!-- LEVEL PLAY SCREEN -->
+  <div class="screen" id="levelScreen">
+    <h2 id="levelTitle">Level 1</h2>
+    <div class="stats-row">
+      <div>Score <span class="num" id="scoreVal">0</span></div>
+      <div>Sorted <span class="num" id="progressVal">0/6</span></div>
+    </div>
+    <div class="water-circle" id="waterCircle">
+      <div class="toast" id="toast"></div>
+    </div>
+    <div class="timer-text" id="timeVal">10s</div>
+    <div class="buckets-row" id="bucketsRow"></div>
+    <button class="back-arrow" id="backFromLevel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+
+    <div class="countdown-overlay" id="countdownOverlay">
+      <div class="countdown-number" id="countdownNumber">3</div>
+      <div class="countdown-label">Get ready to sort...</div>
+    </div>
+  </div>
+
+  <!-- END SCREEN -->
+  <div class="screen" id="endScreen">
+    <h2 id="endTitle">Level Clear</h2>
+    <p id="endSubtitle">All pollutants sorted in time.</p>
+    <div class="score-big" id="endScore">0</div>
+    <button class="primary-btn" id="nextBtn">Next Level</button>
+    <button class="text-btn" id="retryBtn">Try Again</button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
