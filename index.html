@@ -17,14 +17,13 @@
   <div class="screen active" id="titleScreen">
     <div class="title-group">
       <h1>Water<br>Cleaner</h1>
+      <div class="difficulty-row" id="difficultyRow">
+        <button class="difficulty-btn" data-difficulty="easy">Easy</button>
+        <button class="difficulty-btn active" data-difficulty="normal">Normal</button>
+        <button class="difficulty-btn" data-difficulty="hard">Hard</button>
+      </div>
       <button class="menu-btn" id="playBtn">Play</button>
       <button class="menu-btn" id="levelsBtn">Levels</button>
-    </div>
-    <div class="brand-mark">
-      <a href="https://www.charitywater.org" target="_blank" rel="noopener noreferrer">
-        <img src="assets/cw_horizontal_white.jpg" alt="charity: water">
-      </a>
-      <a href="https://www.charitywater.org/donate" target="_blank" rel="noopener noreferrer" class="donate-btn">Donate</a>
     </div>
   </div>
 
@@ -32,14 +31,16 @@
   <div class="screen" id="levelsScreen">
     <h2>Levels</h2>
     <div class="level-grid" id="levelGrid"></div>
-    <button class="back-arrow" id="backFromLevels">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <button class="home-btn" id="backFromLevels" aria-label="Back to home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
+      Home
     </button>
   </div>
 
   <!-- LEVEL PLAY SCREEN -->
   <div class="screen" id="levelScreen">
     <h2 id="levelTitle">Level 1</h2>
+    <div class="difficulty-badge" id="difficultyBadge">Normal</div>
     <div class="stats-row">
       <div>Score <span class="num" id="scoreVal">0</span></div>
       <div>Sorted <span class="num" id="progressVal">0/6</span></div>
@@ -47,10 +48,12 @@
     <div class="water-circle" id="waterCircle">
       <div class="toast" id="toast"></div>
     </div>
+    <div class="milestone-banner" id="milestoneBanner"></div>
     <div class="timer-text" id="timeVal">10s</div>
     <div class="buckets-row" id="bucketsRow"></div>
-    <button class="back-arrow" id="backFromLevel">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <button class="home-btn" id="backFromLevel" aria-label="Back to home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
+      Home
     </button>
 
     <div class="countdown-overlay" id="countdownOverlay">
@@ -66,7 +69,19 @@
     <div class="score-big" id="endScore">0</div>
     <button class="primary-btn" id="nextBtn">Next Level</button>
     <button class="text-btn" id="retryBtn">Try Again</button>
+    <button class="home-btn" id="homeFromEnd" aria-label="Back to home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
+      Home
+    </button>
   </div>
+
+  <!-- FOOTER: charity: water brand + links, shown on every screen -->
+  <footer class="brand-mark">
+    <a href="https://www.charitywater.org" target="_blank" rel="noopener noreferrer">
+      <img src="assets/cw_horizontal_white.jpg" alt="charity: water">
+    </a>
+    <a href="https://www.charitywater.org/donate" target="_blank" rel="noopener noreferrer" class="donate-btn">Donate</a>
+  </footer>
 
 </div>
 

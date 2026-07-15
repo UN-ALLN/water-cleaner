@@ -2,15 +2,39 @@
 const TYPES = ["debris", "bacteria", "chemical"];
   const TOTAL_LEVELS = 12;
 
+  // difficulty modifiers layered on top of each level's base config
+  const DIFFICULTY = {
+    easy:   { label: "Easy",   timeAdjust: 5,  missPenalty: 0 },
+    normal: { label: "Normal", timeAdjust: 0,  missPenalty: 10 },
+    hard:   { label: "Hard",   timeAdjust: -3, missPenalty: 20 },
+  };
+  let difficulty = "normal";
+
   // level config: item count, time, active pollutant types, movement
   function levelConfig(n) {
     const itemCount = Math.min(6 + Math.floor((n - 1) / 2), 12);
-    const time = 10;
+    const baseTime = 10;
+    const diff = DIFFICULTY[difficulty];
+    const time = Math.max(4, baseTime + diff.timeAdjust);
     let types;
     if (n <= 4) types = ["debris", "bacteria"];
     else if (n <= 8) types = ["debris", "bacteria", "chemical"];
     else types = ["debris", "bacteria", "chemical"];
     return { itemCount, time, types };
+  }
+
+  const SOUNDS = {
+    correct: new Audio("assets/sounds/correct.mp3"),
+    miss: new Audio("assets/sounds/miss.mp3"),
+    click: new Audio("assets/sounds/click.mp3"),
+    win: new Audio("assets/sounds/win.mp3"),
+  };
+  function playSound(name) {
+    const src = SOUNDS[name];
+    if (!src) return;
+    const sfx = src.cloneNode();
+    sfx.volume = 0.6;
+    sfx.play().catch(() => {});
   }
 
   let unlockedLevel = 1;
@@ -36,15 +60,30 @@ const TYPES = ["debris", "bacteria", "chemical"];
   }
 
   // ----- Title -----
+  document.querySelectorAll(".difficulty-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      playSound("click");
+      difficulty = btn.dataset.difficulty;
+      document.querySelectorAll(".difficulty-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+  });
+
   document.getElementById("playBtn").addEventListener("click", () => {
+    playSound("click");
     startLevel(currentLevel);
   });
   document.getElementById("levelsBtn").addEventListener("click", () => {
+    playSound("click");
     renderLevelGrid();
     showScreen("levels");
   });
-  document.getElementById("backFromLevels").addEventListener("click", () => showScreen("title"));
+  document.getElementById("backFromLevels").addEventListener("click", () => {
+    playSound("click");
+    showScreen("title");
+  });
   document.getElementById("backFromLevel").addEventListener("click", () => {
+    playSound("click");
     clearInterval(timerId);
     gameActive = false;
     document.getElementById("countdownOverlay").classList.remove("show");
@@ -59,7 +98,10 @@ const TYPES = ["debris", "bacteria", "chemical"];
       btn.className = "level-cell";
       btn.textContent = i;
       btn.disabled = i > unlockedLevel;
-      btn.addEventListener("click", () => startLevel(i));
+      btn.addEventListener("click", () => {
+        playSound("click");
+        startLevel(i);
+      });
       grid.appendChild(btn);
     }
   }
@@ -71,7 +113,34 @@ const TYPES = ["debris", "bacteria", "chemical"];
   const waterCircle = document.getElementById("waterCircle");
   const bucketsRow = document.getElementById("bucketsRow");
   const levelTitle = document.getElementById("levelTitle");
+  const difficultyBadge = document.getElementById("difficultyBadge");
   const toast = document.getElementById("toast");
+  const milestoneBanner = document.getElementById("milestoneBanner");
+
+  // milestone messages, keyed by percent of pollutants sorted in the current level
+  const MILESTONES = [
+    { percent: 0.25, message: "Nice start! Keep it up!" },
+    { percent: 0.5, message: "Halfway there!" },
+    { percent: 0.75, message: "Almost clean!" },
+  ];
+  let milestonesHit = [];
+
+  function checkMilestones() {
+    if (sortedCount >= totalItems) return; // level-clear celebration takes over instead
+    const ratio = sortedCount / totalItems;
+    MILESTONES.forEach(m => {
+      if (ratio >= m.percent && !milestonesHit.includes(m.percent)) {
+        milestonesHit.push(m.percent);
+        showMilestone(m.message);
+      }
+    });
+  }
+
+  function showMilestone(text) {
+    milestoneBanner.textContent = text;
+    milestoneBanner.classList.add("show");
+    setTimeout(() => milestoneBanner.classList.remove("show"), 1400);
+  }
 
   const ICON_LABEL = { debris: "Debris", bacteria: "Bacteria", chemical: "Chemical" };
 
@@ -94,8 +163,12 @@ const TYPES = ["debris", "bacteria", "chemical"];
     timeLeft = cfg.time;
     score = 0;
     sortedCount = 0;
+    milestonesHit = [];
+    milestoneBanner.classList.remove("show");
 
     levelTitle.textContent = "Level " + n;
+    difficultyBadge.textContent = DIFFICULTY[difficulty].label;
+    difficultyBadge.className = "difficulty-badge " + difficulty;
     scoreVal.textContent = "0";
     progressVal.textContent = "0/" + totalItems;
     timeVal.textContent = timeLeft + "s";
@@ -223,6 +296,7 @@ const TYPES = ["debris", "bacteria", "chemical"];
     const type = dragEl.dataset.type;
 
     if (bucket && bucket.dataset.type === type) {
+      playSound("correct");
       score += 100;
       sortedCount++;
       scoreVal.textContent = score;
@@ -230,12 +304,15 @@ const TYPES = ["debris", "bacteria", "chemical"];
       showToast("+100", true);
       dragEl.remove();
       dragEl = null;
+      checkMilestones();
       checkWin();
       return;
     } else if (bucket) {
-      score = Math.max(0, score - 10);
+      playSound("miss");
+      const penalty = DIFFICULTY[difficulty].missPenalty;
+      score = Math.max(0, score - penalty);
       scoreVal.textContent = score;
-      showToast("-10", false);
+      showToast(penalty > 0 ? "-" + penalty : "Miss", false);
       dragEl.classList.add("shake");
       setTimeout(() => dragEl && dragEl.classList.remove("shake"), 300);
     }
@@ -272,6 +349,7 @@ const TYPES = ["debris", "bacteria", "chemical"];
 
     const nextBtn = document.getElementById("nextBtn");
     if (won) {
+      playSound("win");
       unlockedLevel = Math.max(unlockedLevel, currentLevel + 1);
       nextBtn.style.display = "inline-block";
       nextBtn.textContent = currentLevel < TOTAL_LEVELS ? "Next Level" : "Play Again";
@@ -283,10 +361,18 @@ const TYPES = ["debris", "bacteria", "chemical"];
   }
 
   document.getElementById("nextBtn").addEventListener("click", () => {
+    playSound("click");
     const next = currentLevel < TOTAL_LEVELS ? currentLevel + 1 : 1;
     startLevel(next);
   });
-  document.getElementById("retryBtn").addEventListener("click", () => startLevel(currentLevel));
+  document.getElementById("retryBtn").addEventListener("click", () => {
+    playSound("click");
+    startLevel(currentLevel);
+  });
+  document.getElementById("homeFromEnd").addEventListener("click", () => {
+    playSound("click");
+    showScreen("title");
+  });
 
   function launchConfetti() {
     const colors = ["#FFC907", "#7CA9CE", "#4A8B5C", "#EFA97A"];
