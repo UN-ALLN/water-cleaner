@@ -60,6 +60,14 @@
   }
   .screen.active { display: flex; }
 
+  .screen-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: auto 0;
+  }
+
   /* On larger viewports, give the content room to breathe instead of
      staying pinned to phone-sized measurements. */
   @media (min-width: 560px) {
@@ -78,6 +86,20 @@
     line-height: 1.15;
     margin: 0 0 22px;
     text-align: left;
+  }
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.15em;
+    width: 100%;
+  }
+  .title-icon {
+    flex-shrink: 0;
+    display: block;
+    width: 1.6em;
+    height: 1.6em;
+    color: var(--circle-blue);
   }
   .menu-btn {
     display: block;
@@ -364,8 +386,7 @@
     justify-content: center;
     gap: 5px;
     align-self: center;
-    margin-top: auto;
-    padding-top: 24px;
+    margin-top: 18px;
   }
   .home-btn svg { width: 16px; height: 16px; }
   .home-btn:hover { color: var(--ink); }
